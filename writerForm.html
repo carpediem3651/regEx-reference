@@ -1,0 +1,170 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>게시판 글등록</title>
+
+<!-- CDN 방식의 jquery 라이브러리 등록 -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+
+<!-- 정규표현식 js -->
+<script type="text/javascript" src="/js/regEx.js"></script>
+
+<style type="text/css">
+#container{
+	width: 1000px;
+	margin: 0 auto;
+}
+#writeForm, table{
+	margin: 10px 0;
+	width: 100%
+}
+th{
+	background: black;
+	color: white;
+}
+td{
+	border: 1px solid #aaa;
+}
+td, th{
+	padding: 10px;
+}
+input, textarea{
+	background: #eee;
+}
+/* 객체 : focus - 커서가 안으로 들어오는 경우, :hover - 마우스가 올라가는 경우  */
+input:focus, textarea:focus{
+	background: white;
+}
+input{
+	/* 크기 단위 - px : 화면의 점. pt : 종이 인쇄 점. inch, cm, mm : 측정 자.
+	 em : 현재 보여지는 것 1로 해서 비례 크기. */
+	height: 1.5em;
+}
+textarea{
+	/* 크기 변경 : resize : none -> 크기 변경 안됨 */
+	resize: none;
+}
+#writeForm input, #writeForm textarea{
+	width: 98%;
+}
+</style>
+
+<script type="text/javascript">
+$(function(){
+	// 폼의 전달 이벤트 잡아서 데이터 검사.
+	$("#writeForm").submit(function(){
+		// alert("데이터 전달");
+		
+		// 데이터 유효성 검사. - 정규표현식을 사용해서 제목, 내용, 작성자, 비밀번호, 비밀번호 확인
+		// 비밀번호와 비밀번호 확인은 같아야 한다.
+		// 제목 데이터 가져오기 선택.val() - val() : getter. val(값) : setter
+		let title = $("#title").val();
+		title = title.trim();
+		$("#title").val(title);
+		
+		if(!test(reg_title, title, reg_title_error_msg)){
+			$("#title").focus();
+			return false;
+		}
+		
+		// 내용 데이터 가져오기 선택.val() - val() : getter. val(값) : setter
+		let content = $("#content").val();
+		content = content.trim();
+		$("#content").val(content);
+		
+		// 줄바꿈과 공백문자를 제외한 글자가 4자 이상인지? - 줄바꿈 : replaceAll("\n", "")
+		if(content.replaceAll("\n", "").replaceAll(" ", "").length < 4){
+			alert("내용은 줄바꿈과 공백문자를 제외한 글자가 4자 이상이여야 합니다.");
+			$("#content").focus();
+			return false;
+		}
+// 		alert(content.length);
+		
+		if(!test(reg_content, content, reg_content_error_msg)){
+			$("#content").focus();
+			return false;
+		}
+		
+		// 작성자 데이터 가져오기 선택.val() - val() : getter. val(값) : setter
+		let writer = $("#writer").val();
+		writer = writer.trim();
+		$("#writer").val(writer);
+		
+		if(!test(reg_name, writer, reg_name_error_msg)){
+			$("#writer").focus();
+			return false;
+		}
+		
+		// 비밀번호 데이터 가져오기 선택.val() - val() : getter. val(값) : setter
+		let pw = $("#pw").val();
+		
+		if(!test(reg_pw, pw, reg_pw_error_msg)){
+			$("#pw").val("");
+			$("#pw").focus();
+			return false;
+		}
+		
+		// 비밀번호 데이터 가져오기 선택.val() - val() : getter. val(값) : setter
+		let pw2 = $("#pw2").val();
+		
+		if(!test(reg_pw, pw2, reg_pw_error_msg)){
+			$("#pw2").val("");
+			$("#pw2").focus();
+			return false;
+		}
+		
+		// 비밀번호와 비밀번호 확인이 같아야 한다.
+		if(pw != pw2){
+			alert("비밀번호와 비밀번호 확인은 같아야 합니다.");
+			$("#pw").val("");
+			$("#pw2").val("");
+			$("#pw").focus();
+			return false;
+		}
+		
+	});
+});
+</script>
+</head>
+<body>
+<div id="container">
+	<h1>글등록 폼</h1>
+	<hr/>
+	form 태그는 데이터를 입력 받아서 대상 페이지에 전달하려고 할 때 사용하는 태그<br/>
+	action 속성 값으로 지정된 페이지로 이동시키기 위해서 submit() 함수를 호출해서 이동시킨다.<br/>
+	form 안에 button 태그 클릭하면 기본이 타입 submit이므로 submit()호출해서 이동시킨다.<br/>
+	form 안에 input 태그인 경우 반드시 type="submit"으로 지정하면 button과 동일한 동작이된다.<br/>
+	데이터를 주소란에 안보이게 하려면 method="post" 로 지정하세요.
+	<form action="/jqueryBoard/write.jsp" id="writeForm" method="post">
+		<table>
+			<tbody>
+				<tr>
+					<th>제목</th>
+					<td><input name="title" id="title" autofocus></td>
+				</tr>
+				<tr>
+					<th>내용</th>
+					<td><textarea name="content" id="content" rows="7"></textarea></td>
+				</tr>
+				<tr>
+					<th>작성자</th>
+					<td><input name="writer" id="writer"></td>
+				</tr>
+				<tr>
+					<th>비밀번호</th>
+					<td><input name="pw" id="pw" type="password"></td>
+				</tr>
+				<tr>
+					<th>비밀번호 확인</th>
+					<td><input id="pw2" type="password"></td>
+				</tr>
+			</tbody>
+		</table>
+		<button type="submit">등록</button>
+	</form>
+</div>
+</body>
+</html>
