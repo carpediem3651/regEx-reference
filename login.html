@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=<device-width>, initial-scale=1.0">
+    <title>회원가입</title>
+    <script type="text/javascript" src="regEx.js"></script>
+    <script type="text/javascript">
+        // var : 전역변수, 변수의 중복을 허용한다 값이 변하지 않는다, 값으로 사용하면 문제가 없지만 Object와 같이 이미 선언된 객체가 있을 경우 변화가 발생함으로
+        //       문제가 발생한다.
+        // let : 중복 선언이 안된다. 중복 선언을 막음으로 var에서 발생하는 문제를 해결한다.
+        let id, tel, email, name;
+
+        // onload 호출 함수 - 아래 HTML의 내용이 로딩이 다 되면, HTML 객체들이 다 있는 상태에서 실행된다.
+        function ready() {
+            alert("준비함수");
+            // input 객체 찾기
+            id = document.getElementById("id");
+            tel = document.getElementById("tel");
+            email = document.getElementById("email");
+            name = document.getElementById("name");
+        }
+
+        // 가입 버튼을 누르면 데이터 검사를 한다.
+        function checkData() {
+            // 아이디 검사
+            // alert(id);
+            // ID가 패턴에 맞지않으면 경고창을 띄어준다.
+            if(!test(reg_id, id.value, reg_id_error_msg)) {
+                id.focus();
+                return;
+            }
+
+            // 연락처 패턴 테스트
+            if(!test(reg_tel, tel.value, reg_tel_error_msg)) {
+                tel.focus();
+                return;
+            }
+
+            // 이메일 패턴 테스트
+            if(!test(reg_email, email.value, reg_email_error_msg)) {
+                email.focus();
+                return;
+            }
+
+            // 이름 패턴 테스트
+            if(!test(reg_name, name.value, reg_name_error_msg)) {
+                name.focus();
+                return;
+            }
+        }   
+    </script>
+</head>
+<body onload="ready();">
+아이디 : <input id="id"><br>
+연락처 : <input id="tel"><br>
+이메일 : <input id="email"><br>
+이름 : <input id="name"><br>
+<button onclick="checkData();">가입</button>
+</body>
+</html>
